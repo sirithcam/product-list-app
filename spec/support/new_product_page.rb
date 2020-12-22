@@ -26,4 +26,8 @@ class NewProductPage
   def alert_element
     find('#error_explanation')
   end
+
+  def title_element
+    find('h1')
+  end
 end
