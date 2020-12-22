@@ -1,6 +1,6 @@
 RSpec.feature 'New Product Page' do
   let(:new_product_page)  { NewProductPage.new }
-  let(:edit_product_page) { EditProductPage.new }
+  let(:product_page)      { ProductPage.new }
 
   before { new_product_page.visit_page }
 
@@ -12,7 +12,7 @@ RSpec.feature 'New Product Page' do
     new_product_page.fill_in_with(product_name: 'Test123', product_price: '20', product_desc: 'test')   
     new_product_page.submit
 
-    expect(edit_product_page.alert_element.text).to eq 'Product was successfully created.'
+    expect(product_page.alert_element.text).to eq 'Product was successfully created.'
   end
 
   scenario '"Name can\'t be blank" alert is displayed' do
