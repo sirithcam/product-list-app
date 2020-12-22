@@ -2,8 +2,7 @@ class ProductPage
   include Capybara::DSL
   include Rails.application.routes.url_helpers
 
-  def visit_page(id)
-    product = Product.find_by_id(id)
+  def visit_page(product)
     visit product_path(product)
     self
   end 
