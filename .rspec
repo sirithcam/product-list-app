@@ -1,3 +1,4 @@
 --require spec_helper
 --require rails_helper
---color
+--format documentation
+--format documentation --out log/rspec/spec_summary_<%=Time.now.strftime('%Y-%m-%d_%H:%M:%S') %>.log

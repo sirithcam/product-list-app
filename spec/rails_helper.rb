@@ -1,21 +1,26 @@
+require 'rspec/rails'
 require 'spec_helper'
 require 'factory_bot_rails'
 require 'json_spec'
+require 'database_cleaner'
 
 ENV['RAILS_ENV'] ||= 'test'
 require File.expand_path('../config/environment', __dir__)
 Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
+Dir[Rails.root.join("spec/helpers/**/*.rb")].each { |f| require f }
 
 abort("The Rails environment is running in production mode!") if Rails.env.production?
 require 'rspec/rails'
 
-ActiveRecord::Base.establish_connection(adapter: 'sqlite3', database: ':memory:')
+ActiveRecord::Base.establish_connection
 ActiveRecord::Schema.verbose = false
 load "#{Rails.root.to_s}/db/schema.rb"
 
+ActiveSupport::Deprecation.silenced = true
+
 RSpec.configure do |config|
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
-  config.use_transactional_fixtures = true
+  config.use_transactional_fixtures = false 
   config.infer_spec_type_from_file_location!
   config.filter_rails_from_backtrace!
   config.include FactoryBot::Syntax::Methods
@@ -23,5 +28,22 @@ RSpec.configure do |config|
 
   config.before(:each, type: :request) do
     host! 'localhost:3000'
+  end
+
+  config.before(:suite) do
+    DatabaseCleaner.clean_with(:truncation)
+    DatabaseCleaner.strategy = :truncation
+  end
+
+  config.before(:each) do
+    DatabaseCleaner.start
+  end
+
+  config.after(:each) do
+    DatabaseCleaner.clean
+  end
+
+  config.before(:all) do
+    Capybara.server = :puma, { Silent: true }
   end
 end
