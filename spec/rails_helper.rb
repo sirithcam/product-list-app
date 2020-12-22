@@ -9,10 +9,11 @@ require File.expand_path('../config/environment', __dir__)
 Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
 Dir[Rails.root.join("spec/helpers/**/*.rb")].each { |f| require f }
 
+Rails.env = ENV['RAILS_ENV']
 abort("The Rails environment is running in production mode!") if Rails.env.production?
 require 'rspec/rails'
 
-ActiveRecord::Base.establish_connection
+ActiveRecord::Base.establish_connection(adapter: 'sqlite3', database: "#{Rails.root.to_s}/db/test.sqlite3")
 ActiveRecord::Schema.verbose = false
 load "#{Rails.root.to_s}/db/schema.rb"
 
@@ -41,9 +42,5 @@ RSpec.configure do |config|
 
   config.after(:each) do
     DatabaseCleaner.clean
-  end
-
-  config.before(:all) do
-    Capybara.server = :puma, { Silent: true }
   end
 end
