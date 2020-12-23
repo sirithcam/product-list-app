@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :product do
-    name { 'Test Product' }
+    name { generate(:name) }
     price  { 20 }
     description { 'Lorem ipsum' }
     tags { [] }
@@ -9,7 +9,7 @@ end
 
 FactoryBot.define do
   factory :tag do
-    title { 'test_tag' }
+    title { generate(:title) }
     products { [] }
   end
 end
