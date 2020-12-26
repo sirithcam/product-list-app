@@ -4,24 +4,23 @@ class NewProductPage
 
   def visit_page
     visit new_product_path
-    self
+  end
+
+  def get_alert_message
+    self.alert_element.text
   end
 
   def fill_in_with(params={})
-    fill_in 'product_name', with: params.fetch(:product_name)
-    fill_in 'product_price', with: params.fetch(:product_price)
-    fill_in 'product_description', with: params.fetch(:product_desc)
-
-    self
+    self.name_input.fill_in(with: params.fetch(:product_name))
+    self.price_input.fill_in(with: params.fetch(:product_price))
+    self.description_input.fill_in(with: params.fetch(:product_description))
   end
 
-  def submit
-    click_button 'Create Product'
+  def click_create_product
+    self.create_product_button.click
   end
 
-  def cancel
-    click_link 'Back'
-  end
+  private
 
   def alert_element
     find('#error_explanation')
@@ -29,5 +28,21 @@ class NewProductPage
 
   def title_element
     find('h1')
+  end
+
+  def create_product_button
+    find_button('Create Product')
+  end
+
+  def name_input
+    find('#product_name')
+  end
+
+  def price_input
+    find('#product_price')
+  end
+
+  def description_input
+    find('#product_description')
   end
 end

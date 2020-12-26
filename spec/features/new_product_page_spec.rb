@@ -4,48 +4,57 @@ RSpec.feature 'New Product Page' do
 
   before { new_product_page.visit_page }
 
-  scenario 'has title' do
-    expect(new_product_page.title_element.text).to eq 'New Product'
+  context 'valid parameters' do
+    scenario 'User creates new product with valid values' do
+      new_product_page.fill_in_with(product_name: generate(:name), product_price: '20', product_description: 'Lorem ipsum')   
+      new_product_page.click_create_product
+
+      expect(product_page.get_alert_message).to eq 'Product was successfully created.'
+    end
   end
 
-  scenario 'creates new product with valid values' do
-    new_product_page.fill_in_with(product_name: 'Test123', product_price: '20', product_desc: 'test')   
-    new_product_page.submit
+  context 'invalid parameters' do
+    scenario 'User cannot create new product with duplicate name' do
+      product = create(:product)
 
-    expect(product_page.alert_element.text).to eq 'Product was successfully created.'
-  end
+      new_product_page.fill_in_with(product_name: product.name, product_price: '20', product_description: 'Lorem ipsum')
+      new_product_page.click_create_product
 
-  scenario '"Name can\'t be blank" alert is displayed' do
-    new_product_page.fill_in_with(product_name: ' ', product_price: '20', product_desc: 'test')
-    new_product_page.submit
+      expect(new_product_page.get_alert_message).to include 'Name has already been taken' 
+    end
 
-    expect(new_product_page.alert_element.text).to include "Name can't be blank"
-  end
+    scenario 'User cannot create new product with empty name' do
+      new_product_page.fill_in_with(product_name: ' ', product_price: '20', product_description: 'Lorem ipsum')
+      new_product_page.click_create_product
 
-  scenario '"Price can\'t be blank" alert is displayed' do
-    new_product_page.fill_in_with(product_name: 'Test123', product_price: ' ', product_desc: 'test')
-    new_product_page.submit
+      expect(new_product_page.get_alert_message).to include "Name can't be blank"
+    end
 
-    expect(new_product_page.alert_element.text).to include "Price can't be blank"
-  end
+    scenario 'User cannot create new product with empty price' do
+      new_product_page.fill_in_with(product_name: generate(:name), product_price: ' ', product_description: 'Lorem ipsum')
+      new_product_page.click_create_product
 
-  scenario '"Price is not a number" alert is displayed' do
-    new_product_page.fill_in_with(product_name: 'Test123', product_price: 'test', product_desc: 'test')
-    new_product_page.submit
+      expect(new_product_page.get_alert_message).to include "Price can't be blank"
+    end
 
-    expect(new_product_page.alert_element.text).to include "Price is not a number"
-  end
+    scenario 'User cannot create new product with string price' do
+      new_product_page.fill_in_with(product_name: generate(:name), product_price: 'test string', product_description: 'Lorem ipsum')
+      new_product_page.click_create_product
+      expect(new_product_page.get_alert_message).to include "Price is not a number"
+    end
 
-  scenario '"Price must be greater than 0" alert is displayed' do
-    new_product_page.fill_in_with(product_name: 'Test123', product_price: '0', product_desc: 'test')
-    new_product_page.submit
+    scenario 'User cannot create new product with 0 price value' do
+      new_product_page.fill_in_with(product_name: generate(:name), product_price: '0', product_description: 'Lorem ipsum')
+      new_product_page.click_create_product
 
-    expect(new_product_page.alert_element.text).to include "Price must be greater than 0"
-  end
+      expect(new_product_page.get_alert_message).to include 'Price must be greater than 0'
+    end
 
-  scenario '"Back" link redirects to Product Listing Page' do
-    new_product_page.cancel
+    scenario 'User cannot create new product with negative price' do
+      new_product_page.fill_in_with(product_name: generate(:name), product_price: '-20', product_description: 'Lorem ipsum')
+      new_product_page.click_create_product
 
-    expect(page.current_path).to eq products_path
+      expect(new_product_page.get_alert_message).to include "Price must be greater than 0"
+    end
   end
 end

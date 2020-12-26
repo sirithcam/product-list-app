@@ -2,28 +2,45 @@ class ProductPage
   include Capybara::DSL
   include Rails.application.routes.url_helpers
 
-  def visit_page(product)
-    visit product_path(product)
-    self
-  end 
-
-  def name
-    find('p', text: 'Name').text.gsub('Name: ', '')
+  def get_alert_message
+    self.alert_element.text
   end
 
-  def price
-    find('p', text: 'Price').text.gsub('Price: ', '')
+  def get_name
+    name_element.text.gsub('Name: ', '')
   end
 
-  def desc
-    find('p', text: 'Description').text.gsub('Description: ', '')
+  def get_price
+    price_element.text.gsub('Price: ', '')
   end
 
-  def tags
-    find('p', text: 'Tags').text.gsub('Tags: ', '').split(' ,')
+  def get_description
+    description_element.text.gsub('Description: ', '')
   end
+
+  def get_tags
+    tags_element.text.gsub('Tags:', '').split(', ').map(&:strip)
+  end
+
+  private
 
   def alert_element
     find('#notice')
+  end
+
+  def name_element
+    find('p', text: 'Name:')
+  end
+
+  def price_element
+    find('p', text: 'Price:')
+  end
+
+  def description_element
+    find('p', text: 'Description:')
+  end
+
+  def tags_element
+    find('p', text: 'Tags:')
   end
 end
