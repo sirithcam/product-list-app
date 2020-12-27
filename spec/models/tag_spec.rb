@@ -1,28 +1,58 @@
 RSpec.describe Tag do
-  let(:params) { { title: 'test', products: [] } }
+  let(:products) { create_list(:product, 20) }
+  let(:params)   { attributes_for(:tag) }
+  
+  describe 'create' do
+    it 'creates a new instance given a valid paramsibute' do
+      expect { Tag.create!(params) }.to change { Tag.count }.by(1)
+    end
 
-  it 'creates a new instance given a valid paramsibute' do
-    Tag.create!(params)
+    context 'products' do
+      it 'has many products' do
+        tag = Tag.create!(params.merge(products: products))
+        expect(tag.products.size).to eq 20
+      end
+    end
   end
 
-  it 'requires title' do
-    tag = Tag.new(params.merge(title: ''))
-    expect(tag).to_not be_valid
+  describe 'validation' do
+    it 'requires title' do
+      tag = Tag.new(params.merge(title: ''))
+      expect(tag).to_not be_valid
+    end
+
+    it 'rejects duplicate tag' do
+      tag = create(:tag)
+      byebug
+      new_tag = Tag.new(params.merge(title: tag.title))
+      expect(new_tag).not_to be_valid
+    end
+  end
+  
+  describe 'update' do
+    let!(:tag) { create(:tag) }
+
+    it 'updates tag title' do
+      tag.update!(title: 'new_title')
+      expect(tag.title).to eq 'new_title'
+    end
+
+    it 'updates tag products' do
+      tag.update!(products: products)
+      expect(tag.products.size).to eq 20
+    end
   end
 
-  it 'rejects duplicate tag' do
-    old_tag = create(:tag)
-    tag_new = Tag.new(params.merge(title: old_tag.title))
-    expect(tag_new).not_to be_valid
-  end
+  describe 'delete' do
+    let!(:product) { create(:product) }
+    let!(:tag)     { create(:tag, products: [product]) }
+    
+    it 'deletes tag from database' do
+      expect { Tag.delete(tag) }.to change { Tag.count }.by(-1)
+    end
 
-  context 'products' do
-    it 'has many products' do
-      product1 = create(:product)
-      product2 = create(:product)
-
-      tag = Tag.create!(params.merge(products: [product1, product2]))
-      expect(tag.products.count).to eq 2
+    it 'does not delete related product' do
+      expect { Tag.delete(tag) }.not_to change { Product.count }
     end
   end
 end

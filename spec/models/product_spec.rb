@@ -1,61 +1,105 @@
 RSpec.describe Product do
-  let(:params) { { name: 'Product Name', price: 20, description: 'Lorem ipsum', tags: []  } }
-
-  it 'creates a new instance given a valid attribute' do
-    Product.create!(params)
-  end
-
-  it 'requires a name' do
-    product = Product.new(params.merge(name: ' '))
-    expect(product).to_not be_valid
-  end
+  let(:params) { attributes_for(:product) }
+  let(:tags)   { create_list(:tag, 20) }
   
-  it 'rejects duplicate product' do
-    create(:product)
+  describe 'attributes' do
+    it 'has name' do
+      expect(Product.new).to respond_to(:name)
+    end
 
-    product = Product.new(params)
-    expect(product).to_not be_valid
+    it 'has price' do
+      expect(Product.new).to respond_to(:price)
+    end
+
+    it 'has description' do
+      expect(Product.new).to respond_to(:description)
+    end
+
+    it 'has tags' do
+      expect(Product.new).to respond_to(:tags)
+    end
   end
 
-  it 'accept empty description' do
-    Product.create!(params.merge(description: ''))
+  describe 'create' do
+    it 'creates new product given valid attributes' do
+      expect { Product.create!(params) }.to change { Product.count }.by(1)
+    end
+
+    context 'tags' do
+      it 'has many tags' do
+        product = Product.create!(params.merge(tags: tags))
+        expect(product.tags.size).to eq 20
+      end
+    end
   end
 
-  context 'price' do
-    it 'requires a price' do
+  describe 'validation' do
+    it 'rejects empty name' do
+      product = Product.new(params.merge(name: ' '))
+      expect(product).not_to be_valid
+    end
+
+    it 'rejects duplicate name' do
+      product = create(:product)
+      new_product = Product.new(params.merge(name: product.name))
+      expect(product).not_to be_valid
+    end
+
+    it 'rejects empty price' do
       product = Product.new(params.merge(price: ' '))
-      expect(product).to_not be_valid
+      expect(product).not_to be_valid
     end
 
-    it 'rejects string price' do
-      product = Product.new(params.merge(price: 'test'))
-      expect(product).to_not be_valid
-    end
-
-    it 'rejects price value 0' do
+    it 'rejects 0 price value' do
       product = Product.new(params.merge(price: 0))
-      expect(product).to_not be_valid
+      expect(product).not_to be_valid
     end
-
+    
     it 'rejects negative price' do
       product = Product.new(params.merge(price: -20))
-      expect(product).to_not be_valid
+      expect(product).not_to be_valid
+    end
+    
+    it 'rejects string price' do
+      product = Product.new(params.merge(price: 'String Price'))
+      expect(product).not_to be_valid
     end
   end
 
-  context 'tags' do
-    it 'has many tags' do
-      tags = create_list(:tag, 20)
-
-      product = Product.create!(params.merge(tags: tags))
-      expect(product.tags.size).to eq 20
+  describe 'update' do
+    let!(:product) { create(:product) }
+    
+    it 'updates product name' do
+      product.update!(name: 'New Name')
+      expect(product.name).to eq 'New Name'
     end
 
-    it 'rejects duplicate tags' do
-      tag1 = create(:tag)
+    it 'updates product price' do
+      product.update!(price: 44.44)
+      expect(product.price.to_f).to eq 44.44 
+    end
 
-      product = Product.new(params.merge(tags: [tag1, tag1]))
-      expect(product).to_not be_valid
+    it 'updates product description' do
+      product.update!(description: 'New Desc')
+      expect(product.description).to eq 'New Desc'
+    end
+
+    it 'updates product tags' do
+      product.update!(tags: tags)
+      expect(product.tags).to eq tags
+    end
+  end
+
+  describe 'delete' do
+    let!(:tag)     { create(:tag) }
+    let!(:product) { create(:product, tags: [tag]) }
+
+    it 'deletes product from database' do
+      expect { Product.delete(product) }.to change { Product.count }.by(-1)
+    end
+
+    it 'does not delete related tag' do
+      expect { Product.delete(product) }.not_to change { Tag.count }
     end
   end
 end
