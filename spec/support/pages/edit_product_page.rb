@@ -7,34 +7,34 @@ class EditProductPage
   end
 
   def get_alert_message
-    self.alert_element.text
+    alert_element.text
   end
 
   def get_name
-    self.name_input.value
+    name_input.value
   end
 
   def get_price
-    self.price_input.value
+    price_input.value
   end
 
   def get_description
-    self.description_input.value
+    description_input.value
   end
 
   def get_tags
-    self.tags_input.value
+    tags_input.value
   end
 
-  def fill_in_with(params={})
-    self.name_input.fill_in(with: params[:product_name]) unless params[:product_name].nil?
-    self.price_input.fill_in(with: params[:product_price]) unless params[:product_price].nil?
-    self.description_input.fill_in(with: params[:product_description]) unless params[:product_description].nil?
-    self.tags_input.fill_in(with: params[:product_tags]) unless params[:product_tags].nil?
+  def fill_in_with(params = {})
+    name_input.fill_in(with: params[:product_name]) unless params[:product_name].nil?
+    price_input.fill_in(with: params[:product_price]) unless params[:product_price].nil?
+    description_input.fill_in(with: params[:product_description]) unless params[:product_description].nil?
+    tags_input.fill_in(with: params[:product_tags]) unless params[:product_tags].nil?
   end
 
   def click_update_product
-    self.create_product_button.click
+    create_product_button.click
   end
 
   private
@@ -62,7 +62,7 @@ class EditProductPage
   def description_input
     find('#product_description')
   end
-  
+
   def tags_input
     find('#product_tags')
   end

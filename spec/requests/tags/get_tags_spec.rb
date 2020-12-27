@@ -11,7 +11,7 @@ RSpec.describe 'GET /api/v1/tags', type: :request do
       id = JSON.parse(response.body)['data'].first['id']
       expect(id).to eq tag.id.to_s
     end
-    
+
     it 'returns type' do
       type = JSON.parse(response.body)['data'].first['type']
       expect(type).to eq 'tags'
@@ -27,7 +27,7 @@ RSpec.describe 'GET /api/v1/tags', type: :request do
     end
 
     it 'returns status code 200' do
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(:ok)
     end
 
     context 'product details' do
@@ -45,7 +45,7 @@ RSpec.describe 'GET /api/v1/tags', type: :request do
 
   context 'with many tags' do
     let!(:tags) { create_list(:tag, 20) }
-    
+
     before { get api_v1_tags_path, headers: headers }
 
     it 'returns all tags' do
@@ -57,7 +57,7 @@ RSpec.describe 'GET /api/v1/tags', type: :request do
     end
 
     it 'returns status code 200' do
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(:ok)
     end
   end
 
@@ -73,7 +73,7 @@ RSpec.describe 'GET /api/v1/tags', type: :request do
     end
 
     it 'returns status code 200' do
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(:ok)
     end
   end
 end

@@ -38,15 +38,14 @@ RSpec.feature 'Edit Product Page' do
         expect(product_page.get_alert_message).to eq 'Product was successfully updated.'
         expect(product_page.get_description).to eq description
       end
-      
     end
 
-    context 'tags' do  
+    context 'tags' do
       let(:new_titles) { generate_list(:title, 20) }
       let(:tags2)      { create_list(:tag, 20) }
 
       scenario 'User updates product tags with existing tags' do
-        titles = tags2.map{ |tag| tag.title }.join(' ')
+        titles = tags2.map(&:title).join(' ')
         edit_product_page.fill_in_with(product_tags: titles)
         edit_product_page.click_update_product
 
@@ -66,7 +65,6 @@ RSpec.feature 'Edit Product Page' do
           expect(product_page.get_tags).to eq new_titles
           expect(product_page.get_tags.size).to eq new_titles.size
         end
-
       end
 
       scenario 'User appends new tags to existing product tags relationshp' do
@@ -77,7 +75,7 @@ RSpec.feature 'Edit Product Page' do
         aggregate_failures do
           expect(product_page.get_alert_message).to eq 'Product was successfully updated.'
           expect(product_page.get_tags).to eq titles.split(' ')
-          expect(product_page.get_tags.size).to eq (product.tags.size + new_titles.size)
+          expect(product_page.get_tags.size).to eq(product.tags.size + new_titles.size)
         end
       end
 
@@ -137,11 +135,11 @@ RSpec.feature 'Edit Product Page' do
     end
 
     scenario 'User cannot update product with negative price' do
-      edit_product_page.fill_in_with(product_price: -45) 
+      edit_product_page.fill_in_with(product_price: -45)
       edit_product_page.click_update_product
 
       expect(edit_product_page.get_alert_message).to include 'Price must be greater than 0'
-    end 
+    end
 
     # Fails because of bug that db doesn't allow duplicate titles but rails doesn't validate that so 500 error occurs
     scenario 'User cannot update product with duplicate tag' do

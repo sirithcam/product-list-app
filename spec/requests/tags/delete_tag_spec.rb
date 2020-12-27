@@ -23,13 +23,13 @@ RSpec.describe 'DELETE /api/v1/tags/:id', type: :request do
     end
 
     it 'returns status code 204' do
-      expect(response).to have_http_status(204)
+      expect(response).to have_http_status(:no_content)
     end
   end
 
   context 'non-existing tag' do
     before { delete api_v1_tag_path(2), headers: headers }
-    
+
     it 'does not delete exisitng tag' do
       expect(Tag.count).to eq 1
     end
@@ -37,14 +37,14 @@ RSpec.describe 'DELETE /api/v1/tags/:id', type: :request do
     it 'returns message' do
       message = JSON.parse(response.body)['message']
       expect(message).to eq 'Record Not Found!'
-    end 
+    end
 
     it 'returns Content-Type header' do
       expect(response.header['Content-Type']).to eq 'application/vnd.api+json; charset=utf-8'
-    end 
+    end
 
     it 'returns status code 404' do
-      expect(response).to have_http_status(404)
-    end 
+      expect(response).to have_http_status(:not_found)
+    end
   end
 end

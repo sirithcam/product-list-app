@@ -25,7 +25,7 @@ RSpec.describe 'GET /api/v1/products', type: :request do
     # Fails because of bug that when price has 0 in decimal place (i.e. *.00), then one decimal place is missing
     it 'returns price' do
       price = JSON.parse(response.body)['data'].first['attributes']['price']
-      expect(price).to eq sprintf("%.2f", product.price)
+      expect(price).to eq format('%.2f', product.price)
     end
 
     it 'returns description' do
@@ -38,7 +38,7 @@ RSpec.describe 'GET /api/v1/products', type: :request do
     end
 
     it 'returns status code 200' do
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(:ok)
     end
 
     context 'tag details' do
@@ -68,7 +68,7 @@ RSpec.describe 'GET /api/v1/products', type: :request do
     end
 
     it 'returns status code 200' do
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(:ok)
     end
   end
 
@@ -84,7 +84,7 @@ RSpec.describe 'GET /api/v1/products', type: :request do
     end
 
     it 'returns status code 200' do
-      expect(response).to have_http_status(200)
-    end 
+      expect(response).to have_http_status(:ok)
+    end
   end
 end

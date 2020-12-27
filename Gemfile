@@ -29,6 +29,5 @@ group :test do
   gem 'json_spec', '1.1.5'
   gem 'factory_bot_rails', '~> 5.2'
   gem 'selenium-webdriver', '3.142.7'
-  gem 'os', '1.1.1'
   gem 'database_cleaner', '1.8.5'
 end

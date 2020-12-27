@@ -7,17 +7,17 @@ class NewProductPage
   end
 
   def get_alert_message
-    self.alert_element.text
+    alert_element.text
   end
 
-  def fill_in_with(params={})
-    self.name_input.fill_in(with: params.fetch(:product_name))
-    self.price_input.fill_in(with: params.fetch(:product_price))
-    self.description_input.fill_in(with: params.fetch(:product_description))
+  def fill_in_with(params = {})
+    name_input.fill_in(with: params.fetch(:product_name))
+    price_input.fill_in(with: params.fetch(:product_price))
+    description_input.fill_in(with: params.fetch(:product_description))
   end
 
   def click_create_product
-    self.create_product_button.click
+    create_product_button.click
   end
 
   private

@@ -5,7 +5,6 @@ Capybara.register_driver :firefox do |app|
   Capybara::Selenium::Driver.new(
     app,
     browser: :firefox,
-    driver_path: path_to_driver('geckodriver'),
     options: options
   )
 end

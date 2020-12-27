@@ -26,11 +26,11 @@ RSpec.describe 'POST /api/v1/tags', type: :request do
     end
 
     it 'returns Content-Type header' do
-      expect(response.header['Content-Type']).to eq 'application/vnd.api+json; charset=utf-8' 
+      expect(response.header['Content-Type']).to eq 'application/vnd.api+json; charset=utf-8'
     end
 
     it 'returns status code 201' do
-      expect(response).to have_http_status(201)
+      expect(response).to have_http_status(:created)
     end
 
     it 'creates tag in database' do
@@ -59,7 +59,7 @@ RSpec.describe 'POST /api/v1/tags', type: :request do
     end
 
     it 'returns status code 422' do
-      expect(response).to have_http_status(422) 
+      expect(response).to have_http_status(:unprocessable_entity)
     end
 
     it 'does not create tag in database' do
@@ -90,7 +90,7 @@ RSpec.describe 'POST /api/v1/tags', type: :request do
     end
 
     it 'returns status code 422' do
-      expect(response).to have_http_status(422) 
+      expect(response).to have_http_status(:unprocessable_entity)
     end
 
     it 'does not create tag in database' do

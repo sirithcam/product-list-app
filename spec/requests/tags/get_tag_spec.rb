@@ -26,7 +26,7 @@ RSpec.describe 'GET /api/v1/tags/:id', type: :request do
     end
 
     it 'returns products data' do
-      20.times { create(:product, tags: [tag]) }
+      create_list(:product, 20, tags: [tag])
       get api_v1_tag_path(tag), headers: headers
 
       products_data = JSON.parse(response.body)['data']['relationships']['products']['data']
@@ -38,7 +38,7 @@ RSpec.describe 'GET /api/v1/tags/:id', type: :request do
     end
 
     it 'returns status code 200' do
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(:ok)
     end
 
     context 'product details' do
@@ -61,7 +61,7 @@ RSpec.describe 'GET /api/v1/tags/:id', type: :request do
   context 'non-existing tag' do
     before { get api_v1_tag_path(2), headers: headers }
 
-    it 'returns message'  do
+    it 'returns message' do
       message = JSON.parse(response.body)['message']
       expect(message).to eq 'Record Not Found!'
     end
@@ -71,7 +71,7 @@ RSpec.describe 'GET /api/v1/tags/:id', type: :request do
     end
 
     it 'returns status code 404' do
-      expect(response).to have_http_status(404)
+      expect(response).to have_http_status(:not_found)
     end
   end
 end

@@ -1,5 +1,4 @@
-require File.expand_path('../../config/environment', __FILE__)
-require 'os'
+require File.expand_path('../config/environment', __dir__)
 require 'byebug'
 require 'dotenv/load'
 require 'capybara/rspec'

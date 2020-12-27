@@ -3,7 +3,7 @@ class ProductPage
   include Rails.application.routes.url_helpers
 
   def get_alert_message
-    self.alert_element.text
+    alert_element.text
   end
 
   def get_name

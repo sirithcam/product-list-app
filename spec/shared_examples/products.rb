@@ -10,7 +10,7 @@ RSpec.shared_examples 'updates value' do |key, value|
     it 'returns id' do
       id = JSON.parse(response.body)['data']['id']
       expect(id).to eq '1'
-    end 
+    end
 
     it 'returns type' do
       type = JSON.parse(response.body)['data']['type']
@@ -22,7 +22,7 @@ RSpec.shared_examples 'updates value' do |key, value|
 
       var = JSON.parse(response.body)['data']['attributes'][key]
       expect(var).to eq(product[key.to_sym].to_s).and eq value
-    end 
+    end
 
     it 'returns empty tags data' do
       tags_data = JSON.parse(response.body)['data']['relationships']['tags']['data']
@@ -31,10 +31,10 @@ RSpec.shared_examples 'updates value' do |key, value|
 
     it 'returns Content-Type header' do
       expect(response.header['Content-Type']).to eq 'application/vnd.api+json; charset=utf-8'
-    end 
+    end
 
     it 'returns status code 200' do
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(:ok)
     end
   end
 end

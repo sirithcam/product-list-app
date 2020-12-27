@@ -28,7 +28,7 @@ RSpec.describe 'GET /api/v1/products/:id', type: :request do
     # Fails because of bug that when price has 0 in decimal place (i.e. *.00), then one decimal place is missing
     it 'returns price' do
       price = JSON.parse(response.body)['data']['attributes']['price']
-      expect(price).to eq sprintf("%.2f", product.price)
+      expect(price).to eq format('%.2f', product.price)
     end
 
     it 'returns empty tags data' do
@@ -37,7 +37,7 @@ RSpec.describe 'GET /api/v1/products/:id', type: :request do
     end
 
     it 'returns tags data' do
-      20.times { create(:tag, products: [product]) }
+      create_list(:tag, 20, products: [product])
       get api_v1_product_path(product), headers: headers
 
       tags_data = JSON.parse(response.body)['data']['relationships']['tags']['data']
@@ -49,11 +49,11 @@ RSpec.describe 'GET /api/v1/products/:id', type: :request do
     end
 
     it 'returns status code 200' do
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(:ok)
     end
 
     context 'tag details' do
-      let!(:tag) { create(:tag, products: [product] ) }
+      let!(:tag) { create(:tag, products: [product]) }
 
       before { get api_v1_product_path(product), headers: headers }
 
@@ -72,17 +72,17 @@ RSpec.describe 'GET /api/v1/products/:id', type: :request do
   context 'non-existing product' do
     before { get api_v1_product_path(2), headers: headers }
 
-    it 'returns message'  do  
+    it 'returns message' do
       message = JSON.parse(response.body)['message']
       expect(message).to eq 'Record Not Found!'
-    end 
+    end
 
     it 'returns Content-Type header' do
       expect(response.header['Content-Type']).to eq 'application/vnd.api+json; charset=utf-8'
     end
 
     it 'returns status code 404' do
-      expect(response).to have_http_status(404)
-    end 
+      expect(response).to have_http_status(:not_found)
+    end
   end
 end

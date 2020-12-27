@@ -1,6 +1,6 @@
-Capybara.configure do |config|
-  include DriversHelper
+ENV['BROWSER'] ||= 'firefox'
 
+Capybara.configure do |config|
   config.default_driver = ENV['BROWSER'].to_sym
 
   config.app_host = 'localhost:3001'
@@ -10,7 +10,7 @@ Capybara.configure do |config|
   config.run_server = true
 
   config.save_path = 'log/screenshots'
-  
+
   config.server = :puma, { Silent: true }
 end
 

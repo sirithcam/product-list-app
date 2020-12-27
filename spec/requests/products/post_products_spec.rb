@@ -23,7 +23,7 @@ RSpec.describe 'POST /api/v1/products', type: :request do
     # Fails because of bug that when price has 0 in decimal place (i.e. *.00), then one decimal place is missing
     it 'returns price' do
       price = JSON.parse(response.body)['data']['attributes']['price']
-      expect(price).to eq sprintf("%.2f", params[:data][:attributes][:price].to_s)
+      expect(price).to eq format('%.2f', params[:data][:attributes][:price].to_s)
     end
 
     it 'returns description' do
@@ -41,7 +41,7 @@ RSpec.describe 'POST /api/v1/products', type: :request do
     end
 
     it 'returns status code 201' do
-      expect(response).to have_http_status(201)
+      expect(response).to have_http_status(:created)
     end
 
     it 'creates product in database' do
@@ -71,7 +71,7 @@ RSpec.describe 'POST /api/v1/products', type: :request do
       end
 
       it 'returns status code 422' do
-        expect(response).to have_http_status(422)
+        expect(response).to have_http_status(:unprocessable_entity)
       end
 
       it 'does not create product in database' do
@@ -83,27 +83,27 @@ RSpec.describe 'POST /api/v1/products', type: :request do
     context 'rejects duplicate name' do
       before do
         name = create(:product).name
-        params[:data][:attributes].merge!(name: name) 
+        params[:data][:attributes].merge!(name: name)
         post api_v1_products_path, params: params.to_json, headers: headers
-      end 
+      end
 
       it 'returns pointer' do
         pointer = JSON.parse(response.body)['errors'].first['source']['pointer']
         expect(pointer).to eq '/data/attributes/name'
-      end 
+      end
 
       it 'returns detail' do
         detail = JSON.parse(response.body)['errors'].first['detail']
         expect(detail).to eq 'has already been taken'
-      end 
+      end
 
       it 'returns Content-Type header' do
         expect(response.header['Content-Type']).to eq 'application/vnd.api+json; charset=utf-8'
       end
 
       it 'returns status code 422' do
-        expect(response).to have_http_status(422)
-      end 
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
 
       it 'does not create product in database' do
         expect(Product.count).to eq 1
@@ -112,118 +112,118 @@ RSpec.describe 'POST /api/v1/products', type: :request do
 
     context 'rejects blank price' do
       before do
-        params[:data][:attributes].merge!(price: ' ') 
+        params[:data][:attributes].merge!(price: ' ')
         post api_v1_products_path, params: params.to_json, headers: headers
-      end 
+      end
 
       it 'returns pointer' do
         pointer = JSON.parse(response.body)['errors'].first['source']['pointer']
         expect(pointer).to eq '/data/attributes/price'
-      end 
+      end
 
       it 'returns detail' do
         detail = JSON.parse(response.body)['errors'].first['detail']
         expect(detail).to eq "can't be blank"
-      end 
+      end
 
       it 'returns Content-Type header' do
         expect(response.header['Content-Type']).to eq 'application/vnd.api+json; charset=utf-8'
       end
 
       it 'returns status code 422' do
-        expect(response).to have_http_status(422)
-      end 
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
 
       it 'does not create product in database' do
         expect(Product.count).to eq 0
-      end  
+      end
     end
 
     context 'rejects 0 price value' do
       before do
-        params[:data][:attributes].merge!(price: 0) 
+        params[:data][:attributes].merge!(price: 0)
         post api_v1_products_path, params: params.to_json, headers: headers
-      end 
+      end
 
       it 'returns pointer' do
         pointer = JSON.parse(response.body)['errors'].first['source']['pointer']
         expect(pointer).to eq '/data/attributes/price'
-      end 
+      end
 
       it 'returns detail' do
         detail = JSON.parse(response.body)['errors'].first['detail']
         expect(detail).to eq 'must be greater than 0'
-      end 
+      end
 
       it 'returns Content-Type header' do
         expect(response.header['Content-Type']).to eq 'application/vnd.api+json; charset=utf-8'
       end
 
       it 'returns status code 422' do
-        expect(response).to have_http_status(422)
-      end 
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
 
       it 'does not create product in database' do
         expect(Product.count).to eq 0
-      end   
+      end
     end
 
     context 'rejects negative price' do
       before do
         params[:data][:attributes].merge!(price: -20.22)
         post api_v1_products_path, params: params.to_json, headers: headers
-      end 
+      end
 
       it 'returns pointer' do
         pointer = JSON.parse(response.body)['errors'].first['source']['pointer']
         expect(pointer).to eq '/data/attributes/price'
-      end 
+      end
 
       it 'returns detail' do
         detail = JSON.parse(response.body)['errors'].first['detail']
         expect(detail).to eq 'must be greater than 0'
-      end 
+      end
 
       it 'returns Content-Type header' do
         expect(response.header['Content-Type']).to eq 'application/vnd.api+json; charset=utf-8'
       end
 
       it 'returns status code 422' do
-        expect(response).to have_http_status(422)
-      end 
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
 
       it 'does not create product in database' do
         expect(Product.count).to eq 0
-      end   
+      end
     end
 
     context 'rejects string price' do
       before do
         params[:data][:attributes].merge!(price: 'test string')
         post api_v1_products_path, params: params.to_json, headers: headers
-      end 
+      end
 
       it 'returns pointer' do
         pointer = JSON.parse(response.body)['errors'].first['source']['pointer']
         expect(pointer).to eq '/data/attributes/price'
-      end 
+      end
 
       it 'returns detail' do
         detail = JSON.parse(response.body)['errors'].first['detail']
         expect(detail).to eq 'is not a number'
-      end 
+      end
 
       it 'returns Content-Type header' do
         expect(response.header['Content-Type']).to eq 'application/vnd.api+json; charset=utf-8'
       end
 
       it 'returns status code 422' do
-        expect(response).to have_http_status(422)
-      end 
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
 
       it 'does not create product in database' do
         expect(Product.count).to eq 0
-      end   
+      end
     end
   end
 end

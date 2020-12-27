@@ -1,7 +1,7 @@
 RSpec.describe 'DELETE /api/v1/product/:id', type: :request do
   let!(:tag)     { create(:tag) }
   let!(:product) { create(:product, tags: [tag]) }
-  let(:headers)  { { 'Accept': 'application/vnd.api+json' } } 
+  let(:headers)  { { 'Accept': 'application/vnd.api+json' } }
 
   context 'existing product' do
     before { delete api_v1_product_path(product), headers: headers }
@@ -23,7 +23,7 @@ RSpec.describe 'DELETE /api/v1/product/:id', type: :request do
     end
 
     it 'returns status code 204' do
-      expect(response).to have_http_status(204)
+      expect(response).to have_http_status(:no_content)
     end
   end
 
@@ -37,14 +37,14 @@ RSpec.describe 'DELETE /api/v1/product/:id', type: :request do
     it 'returns error message' do
       message = JSON.parse(response.body)['message']
       expect(message).to eq 'Record Not Found!'
-    end 
+    end
 
     it 'returns Content-Type header' do
       expect(response.header['Content-Type']).to eq 'application/vnd.api+json; charset=utf-8'
-    end 
+    end
 
     it 'returns status code 404' do
-      expect(response).to have_http_status(404)
+      expect(response).to have_http_status(:not_found)
     end
   end
 end

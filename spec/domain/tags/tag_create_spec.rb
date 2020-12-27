@@ -7,14 +7,14 @@ RSpec.describe Tags::Create do
       it 'returns created tag' do
         tag = Tags::Create.run(title)
         expect(tag).to eq Tag.find_by_title(title)
-      end 
-    end 
+      end
+    end
 
     context 'invalid attributes' do
       it 'returns new not saved tag' do
         tag = Tags::Create.run(' ')
         expect(tag.id).to be_nil
-      end 
-    end 
-  end 
+      end
+    end
+  end
 end

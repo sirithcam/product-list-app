@@ -5,9 +5,9 @@ RSpec.describe 'PATCH /api/v1/tags/:id', type: :request do
 
   context 'valid parameters' do
     before do
-      patch api_v1_tag_path(tag), params: params.to_json, headers: headers 
+      patch api_v1_tag_path(tag), params: params.to_json, headers: headers
       tag.reload
-    end 
+    end
 
     it 'returns id' do
       id = JSON.parse(response.body)['data']['id']
@@ -30,7 +30,7 @@ RSpec.describe 'PATCH /api/v1/tags/:id', type: :request do
     end
 
     it 'returns products data' do
-      20.times { create(:product, tags: [tag]) }
+      create_list(:product, 20, tags: [tag])
       patch api_v1_tag_path(tag), params: params.merge(title: 'modified_title2').to_json, headers: headers
 
       products_data = JSON.parse(response.body)['data']['relationships']['products']['data']
@@ -42,7 +42,7 @@ RSpec.describe 'PATCH /api/v1/tags/:id', type: :request do
     end
 
     it 'returns status code 200' do
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(:ok)
     end
   end
 
@@ -68,7 +68,7 @@ RSpec.describe 'PATCH /api/v1/tags/:id', type: :request do
       end
 
       it 'returns status code 422' do
-        expect(response).to have_http_status(422)
+        expect(response).to have_http_status(:unprocessable_entity)
       end
 
       it 'does not change database value' do
@@ -85,31 +85,31 @@ RSpec.describe 'PATCH /api/v1/tags/:id', type: :request do
         tag2 = create(:tag)
         params[:data][:attributes].merge!(title: tag2.title)
         patch api_v1_tag_path(tag), params: params.to_json, headers: headers
-      end 
+      end
 
       xit 'returns pointer' do
         pointer = JSON.parse(response.body)['errors'].first['source']['pointer']
         expect(pointer).to eq '/data/attributes/title'
-      end 
+      end
 
       xit 'returns detail' do
         detail = JSON.parse(response.body)['errors'].first['detail']
         expect(detail).to eq 'has already been taken'
-      end 
+      end
 
       it 'returns Content-Type header' do
         expect(response.header['Content-Type']).to eq 'application/vnd.api+json; charset=utf-8'
       end
 
       it 'returns status code 422' do
-        expect(response).to have_http_status(422) 
-      end 
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
 
       it 'does not change database value' do
         old_title = tag.title
         tag.reload
         expect(tag.title).to eq old_title
-      end 
+      end
     end
   end
 
@@ -126,7 +126,7 @@ RSpec.describe 'PATCH /api/v1/tags/:id', type: :request do
     end
 
     it 'returns status code 404' do
-      expect(response).to have_http_status(404)
+      expect(response).to have_http_status(:not_found)
     end
   end
 end

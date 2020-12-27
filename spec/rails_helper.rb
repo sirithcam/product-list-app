@@ -6,23 +6,23 @@ require 'database_cleaner'
 
 ENV['RAILS_ENV'] ||= 'test'
 require File.expand_path('../config/environment', __dir__)
-Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
-Dir[Rails.root.join("spec/helpers/**/*.rb")].each { |f| require f }
-Dir[Rails.root.join("spec/shared_examples/**/*.rb")].each { |f| require f }
+Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
+Dir[Rails.root.join('spec/helpers/**/*.rb')].each { |f| require f }
+Dir[Rails.root.join('spec/shared_examples/**/*.rb')].each { |f| require f }
 
 Rails.env = ENV['RAILS_ENV']
-abort("The Rails environment is running in production mode!") if Rails.env.production?
+abort('The Rails environment is running in production mode!') if Rails.env.production?
 require 'rspec/rails'
 
-ActiveRecord::Base.establish_connection(adapter: 'sqlite3', database: "#{Rails.root.to_s}/db/test.sqlite3")
+ActiveRecord::Base.establish_connection(adapter: 'sqlite3', database: "#{Rails.root}/db/test.sqlite3")
 ActiveRecord::Schema.verbose = false
-load "#{Rails.root.to_s}/db/schema.rb"
+load "#{Rails.root}/db/schema.rb"
 
 ActiveSupport::Deprecation.silenced = true
 
 RSpec.configure do |config|
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
-  config.use_transactional_fixtures = false 
+  config.use_transactional_fixtures = false
   config.infer_spec_type_from_file_location!
   config.filter_rails_from_backtrace!
   config.include FactoryBot::Syntax::Methods
@@ -37,11 +37,11 @@ RSpec.configure do |config|
     DatabaseCleaner.strategy = :truncation
   end
 
-  config.before(:each) do
+  config.before do
     DatabaseCleaner.start
   end
 
-  config.after(:each) do
+  config.after do
     DatabaseCleaner.clean
   end
 end
