@@ -4,12 +4,12 @@ RSpec.describe Tag do
 
   describe 'create' do
     it 'creates a new instance given a valid attributes' do
-      expect { Tag.create!(params) }.to change(Tag, :count).by(1)
+      expect { described_class.create!(params) }.to change(described_class, :count).by(1)
     end
 
     context 'products' do
       it 'has many products' do
-        tag = Tag.create!(params.merge(products: products))
+        tag = described_class.create!(params.merge(products: products))
         expect(tag.products.size).to eq 20
       end
     end
@@ -17,14 +17,14 @@ RSpec.describe Tag do
 
   describe 'validation' do
     it 'requires title' do
-      tag = Tag.new(params.merge(title: ''))
+      tag = described_class.new(params.merge(title: ''))
       expect(tag).not_to be_valid
     end
 
     # Fails because of a bug that allows duplicate tags
     it 'rejects duplicate tag' do
       tag = create(:tag)
-      new_tag = Tag.new(params.merge(title: tag.title))
+      new_tag = described_class.new(params.merge(title: tag.title))
       expect(new_tag).not_to be_valid
     end
   end
@@ -48,11 +48,11 @@ RSpec.describe Tag do
     let!(:tag)     { create(:tag, products: [product]) }
 
     it 'deletes tag from database' do
-      expect { Tag.delete(tag) }.to change(Tag, :count).by(-1)
+      expect { described_class.delete(tag) }.to change(described_class, :count).by(-1)
     end
 
     it 'does not delete related product' do
-      expect { Tag.delete(tag) }.not_to change(Product, :count)
+      expect { described_class.delete(tag) }.not_to change(Product, :count)
     end
   end
 end

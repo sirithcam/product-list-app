@@ -4,30 +4,30 @@ RSpec.describe Product do
 
   describe 'attributes' do
     it 'has name' do
-      expect(Product.new).to respond_to(:name)
+      expect(described_class.new).to respond_to(:name)
     end
 
     it 'has price' do
-      expect(Product.new).to respond_to(:price)
+      expect(described_class.new).to respond_to(:price)
     end
 
     it 'has description' do
-      expect(Product.new).to respond_to(:description)
+      expect(described_class.new).to respond_to(:description)
     end
 
     it 'has tags' do
-      expect(Product.new).to respond_to(:tags)
+      expect(described_class.new).to respond_to(:tags)
     end
   end
 
   describe 'create' do
     it 'creates new product given valid attributes' do
-      expect { Product.create!(params) }.to change(Product, :count).by(1)
+      expect { described_class.create!(params) }.to change(described_class, :count).by(1)
     end
 
     context 'tags' do
       it 'has many tags' do
-        product = Product.create!(params.merge(tags: tags))
+        product = described_class.create!(params.merge(tags: tags))
         expect(product.tags.size).to eq 20
       end
     end
@@ -35,34 +35,34 @@ RSpec.describe Product do
 
   describe 'validation' do
     it 'rejects empty name' do
-      product = Product.new(params.merge(name: ' '))
+      product = described_class.new(params.merge(name: ' '))
       expect(product).not_to be_valid
     end
 
     # Fails because of a bug that allows duplicate names
     it 'rejects duplicate name' do
       product = create(:product)
-      new_product = Product.new(params.merge(name: product.name))
+      new_product = described_class.new(params.merge(name: product.name))
       expect(product).not_to be_valid
     end
 
     it 'rejects empty price' do
-      product = Product.new(params.merge(price: ' '))
+      product = described_class.new(params.merge(price: ' '))
       expect(product).not_to be_valid
     end
 
     it 'rejects 0 price value' do
-      product = Product.new(params.merge(price: 0))
+      product = described_class.new(params.merge(price: 0))
       expect(product).not_to be_valid
     end
 
     it 'rejects negative price' do
-      product = Product.new(params.merge(price: -20))
+      product = described_class.new(params.merge(price: -20))
       expect(product).not_to be_valid
     end
 
     it 'rejects string price' do
-      product = Product.new(params.merge(price: 'String Price'))
+      product = described_class.new(params.merge(price: 'String Price'))
       expect(product).not_to be_valid
     end
   end
@@ -102,11 +102,11 @@ RSpec.describe Product do
     let!(:product) { create(:product, tags: [tag]) }
 
     it 'deletes product from database' do
-      expect { Product.delete(product) }.to change(Product, :count).by(-1)
+      expect { described_class.delete(product) }.to change(described_class, :count).by(-1)
     end
 
     it 'does not delete related tag' do
-      expect { Product.delete(product) }.not_to change(Tag, :count)
+      expect { described_class.delete(product) }.not_to change(Tag, :count)
     end
   end
 end

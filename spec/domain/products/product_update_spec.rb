@@ -6,19 +6,19 @@ RSpec.describe Products::Update do
   describe '.run method' do
     context 'valid attributes' do
       it 'returns updated product' do
-        updated_product = Products::Update.run(product, params)
+        updated_product = described_class.run(product, params)
         expect(updated_product.name).to eq params[:name]
       end
 
       it 'returns updated product with tags' do
-        updated_product = Products::Update.run(product, params.merge(tags: [tag]))
+        updated_product = described_class.run(product, params.merge(tags: [tag]))
         expect(updated_product.tags.size).to eq 1
       end
     end
 
     context 'invalid attributes' do
       it 'returns product with error message' do
-        updated_product = Products::Update.run(product, params.merge(name: ' '))
+        updated_product = described_class.run(product, params.merge(name: ' '))
         expect(updated_product.errors.size).to eq 1
       end
     end
