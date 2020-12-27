@@ -21,7 +21,13 @@ group :development do
 end
 
 group :test do
+  gem 'capybara', '3.34.0'
+  gem 'capybara-screenshot', '1.0.25'
+  gem 'dotenv', '2.7.6'
+  gem 'rails-controller-testing', '1.0.5'
   gem 'rspec-rails', '4.0.1'
   gem 'json_spec', '1.1.5'
   gem 'factory_bot_rails', '~> 5.2'
+  gem 'selenium-webdriver', '3.142.7'
+  gem 'database_cleaner', '1.8.5'
 end
