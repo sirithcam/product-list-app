@@ -3,7 +3,7 @@ RSpec.describe Tag do
   let(:params)   { attributes_for(:tag) }
   
   describe 'create' do
-    it 'creates a new instance given a valid paramsibute' do
+    it 'creates a new instance given a valid attributes' do
       expect { Tag.create!(params) }.to change { Tag.count }.by(1)
     end
 
@@ -21,9 +21,9 @@ RSpec.describe Tag do
       expect(tag).to_not be_valid
     end
 
+    # Fails because of a bug that allows duplicate tags
     it 'rejects duplicate tag' do
       tag = create(:tag)
-      byebug
       new_tag = Tag.new(params.merge(title: tag.title))
       expect(new_tag).not_to be_valid
     end

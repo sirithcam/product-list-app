@@ -14,6 +14,7 @@ RSpec.feature 'New Product Page' do
   end
 
   context 'invalid parameters' do
+    # Fails because of a bug that allows duplicate names
     scenario 'User cannot create new product with duplicate name' do
       product = create(:product)
 

@@ -71,6 +71,36 @@ RSpec.describe 'PATCH /api/v1/products/:id', type: :request do
         expect(response).to have_http_status(200)
       end
     end
+
+    context 'removes tags' do
+      before do
+        params[:data][:attributes].merge!(tags: [] )
+        patch api_v1_product_path(product), params: params.to_json, headers: headers
+      end 
+  
+      it 'returns id' do
+        id = JSON.parse(response.body)['data']['id']
+        expect(id).to eq '1' 
+      end 
+
+      it 'returns type' do
+        type = JSON.parse(response.body)['data']['type']
+        expect(type).to eq 'products'
+      end 
+
+      it 'returns new tags data' do
+        tags_data = JSON.parse(response.body)['data']['relationships']['tags']['data']
+        expect(tags_data.size).to eq 0
+      end 
+
+      it 'returns Content-Type header' do
+        expect(response.header['Content-Type']).to eq 'application/vnd.api+json; charset=utf-8'
+      end 
+
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
+      end 
+    end
   end
 
   describe 'invalid parameters' do
@@ -202,6 +232,31 @@ RSpec.describe 'PATCH /api/v1/products/:id', type: :request do
       end
     end
 
+    context 'rejects string price' do
+      before do
+        params[:data][:attributes].merge!(price: 'test string')
+        patch api_v1_product_path(product), params: params.to_json, headers: headers
+      end
+
+      it 'returns pointer' do
+        pointer = JSON.parse(response.body)['errors'].first['source']['pointer']
+        expect(pointer).to eq '/data/attributes/price'
+      end
+
+      it 'returns detail' do
+        detail = JSON.parse(response.body)['errors'].first['detail']
+        expect(detail).to eq 'is not a number'
+      end
+
+      it 'returns Content-Type header' do
+        expect(response.header['Content-Type']).to eq 'application/vnd.api+json; charset=utf-8'
+      end
+
+      it 'returns status code 422' do
+        expect(response).to have_http_status(422)
+      end
+    end
+
     context 'rejects blank tag' do
       before do
         params[:data][:attributes].merge!(tags: [' '])
@@ -274,7 +329,6 @@ RSpec.describe 'PATCH /api/v1/products/:id', type: :request do
 
         product.reload
         expect(old_attributes).to eq product.attributes
-
       end
 
       it 'does not save product when tag update fails' do

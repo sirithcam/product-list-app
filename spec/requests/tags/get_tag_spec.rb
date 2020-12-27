@@ -6,8 +6,8 @@ RSpec.describe 'GET /api/v1/tags/:id', type: :request do
     before { get api_v1_tag_path(tag), headers: headers }
 
     it 'returns id' do
-      id = JSON.parse(response.body)['data']['id'].to_i
-      expect(id).to eq tag.id
+      id = JSON.parse(response.body)['data']['id']
+      expect(id).to eq tag.id.to_s
     end
 
     it 'returns type' do
@@ -47,8 +47,8 @@ RSpec.describe 'GET /api/v1/tags/:id', type: :request do
       before { get api_v1_tag_path(tag), headers: headers }
 
       it 'returns id' do
-        id = JSON.parse(response.body)['data']['relationships']['products']['data'].first['id'].to_i
-        expect(id).to eq product.id
+        id = JSON.parse(response.body)['data']['relationships']['products']['data'].first['id']
+        expect(id).to eq product.id.to_s
       end
 
       it 'returns type' do

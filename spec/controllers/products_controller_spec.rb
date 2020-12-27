@@ -49,7 +49,8 @@ RSpec.describe ProductsController do
       it 'has product name' do
         expect(response.body).to have_selector('tbody tr td', text: product.name)
       end
-
+      
+      # Fails because of bug that when price has 0 in decimal place (i.e. *.00), then one decimal place is missing
       it 'has product price' do
         expect(response.body).to have_selector('tbody tr td', text: sprintf("%.2f", product.price))
       end
@@ -75,6 +76,7 @@ RSpec.describe ProductsController do
         expect(response.body).to have_selector("a[href='#{product_path(product)}'][data-method='delete']", text: 'Destroy')
       end
 
+      # Fails because app does not support pagination, controller just selects 10 first entries from database
       it 'paginate products' do
         products
         get :index
@@ -101,6 +103,7 @@ RSpec.describe ProductsController do
       expect(response.body).to have_selector('p', text: product.name)
     end
 
+    # Fails because of bug that when price has 0 in decimal place (i.e. *.00), then one decimal place is missing
     it 'has product price' do
       expect(response.body).to have_selector('p', text: sprintf("%.2f", product.price))
     end

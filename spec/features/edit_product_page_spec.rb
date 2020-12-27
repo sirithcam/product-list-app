@@ -113,6 +113,7 @@ RSpec.feature 'Edit Product Page' do
       expect(edit_product_page.get_alert_message).to include "Name can't be blank"
     end
 
+    # Fails because of a bug that allows duplicate names
     scenario 'User cannot update product with duplicate name' do
       product2 = create(:product)
       edit_product_page.fill_in_with(product_name: product2.name)
@@ -142,6 +143,7 @@ RSpec.feature 'Edit Product Page' do
       expect(edit_product_page.get_alert_message).to include 'Price must be greater than 0'
     end 
 
+    # Fails because of bug that db doesn't allow duplicate titles but rails doesn't validate that so 500 error occurs
     scenario 'User cannot update product with duplicate tag' do
       title = generate(:title)
       edit_product_page.fill_in_with(product_tags: "#{title} #{title}")

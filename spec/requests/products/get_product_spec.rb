@@ -6,8 +6,8 @@ RSpec.describe 'GET /api/v1/products/:id', type: :request do
     before { get api_v1_product_path(product), headers: headers }
 
     it 'returns id' do
-      id = JSON.parse(response.body)['data']['id'].to_i
-      expect(id).to eq product.id
+      id = JSON.parse(response.body)['data']['id']
+      expect(id).to eq product.id.to_s
     end
 
     it 'returns type' do
@@ -25,9 +25,10 @@ RSpec.describe 'GET /api/v1/products/:id', type: :request do
       expect(description).to eq product.description
     end
 
+    # Fails because of bug that when price has 0 in decimal place (i.e. *.00), then one decimal place is missing
     it 'returns price' do
-      price = JSON.parse(response.body)['data']['attributes']['price'].to_f
-      expect(price).to eq product.price.to_f
+      price = JSON.parse(response.body)['data']['attributes']['price']
+      expect(price).to eq sprintf("%.2f", product.price)
     end
 
     it 'returns empty tags data' do
@@ -57,8 +58,8 @@ RSpec.describe 'GET /api/v1/products/:id', type: :request do
       before { get api_v1_product_path(product), headers: headers }
 
       it 'returns id' do
-        id = JSON.parse(response.body)['data']['relationships']['tags']['data'].first['id'].to_i
-        expect(id).to eq tag.id
+        id = JSON.parse(response.body)['data']['relationships']['tags']['data'].first['id']
+        expect(id).to eq tag.id.to_s
       end
 
       it 'returns type' do

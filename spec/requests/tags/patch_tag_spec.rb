@@ -1,6 +1,6 @@
 RSpec.describe 'PATCH /api/v1/tags/:id', type: :request do
   let!(:tag)      { create(:tag) }
-  let(:params)    { { data: { type: 'tags', attributes: { title: 'modified_title' } } } }
+  let(:params)    { { data: { type: 'tags', attributes: attributes_for(:tag, title: 'modified_title') } } }
   let(:headers)   { { 'Content-Type': 'application/vnd.api+json', 'Accept': 'application/vnd.api+json' } }
 
   context 'valid parameters' do
@@ -16,12 +16,12 @@ RSpec.describe 'PATCH /api/v1/tags/:id', type: :request do
 
     it 'returns type' do
       type = JSON.parse(response.body)['data']['type']
-      expect(type).to eq 'tags'
+      expect(type).to eq params[:data][:type]
     end
 
     it 'returns title' do
       title = JSON.parse(response.body)['data']['attributes']['title']
-      expect(title).to eq(tag.title).and eq 'modified_title'
+      expect(title).to eq(tag.title).and eq params[:data][:attributes][:title]
     end
 
     it 'returns empty products data' do

@@ -39,6 +39,7 @@ RSpec.describe Product do
       expect(product).not_to be_valid
     end
 
+    # Fails because of a bug that allows duplicate names
     it 'rejects duplicate name' do
       product = create(:product)
       new_product = Product.new(params.merge(name: product.name))
@@ -87,6 +88,12 @@ RSpec.describe Product do
     it 'updates product tags' do
       product.update!(tags: tags)
       expect(product.tags).to eq tags
+    end
+
+    it 'removes tag' do
+      create(:tag, products: [product])
+      product.reload
+      expect { product.update!(tags: []) }.to change { product.tags.size }.by(-1)
     end
   end
 
