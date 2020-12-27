@@ -5,6 +5,7 @@ require 'dotenv/load'
 require 'capybara/rspec'
 require 'capybara-screenshot/rspec'
 require 'selenium/webdriver'
+require 'rails-controller-testing'
 
 RSpec.configure do |config|
   config.expect_with :rspec do |expectations|
